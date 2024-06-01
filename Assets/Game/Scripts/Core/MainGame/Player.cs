@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using Game.Scripts.Core.MainGame;
 using Game.Scripts.Foundation;
 using R3;
@@ -29,7 +30,7 @@ namespace Game.Scripts.Core
             _textObjectPool.OnActive.Subscribe(x =>
             {
                 x.transform.position = transform.position;
-            });
+            }).AddTo(this);
         }
 
         public void Move(bool isRight)
