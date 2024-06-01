@@ -4,16 +4,16 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Arrow
   - Ground
+  - FallObj
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - FallObj
   - Water
   - UI
-  - 
+  - UIObj
   - 
   - 
   - 

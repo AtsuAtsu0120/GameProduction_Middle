@@ -25,9 +25,23 @@ namespace Game.Scripts.Core.MainGame
             {
                 _player.Damage(damage);
             }).AddTo(this);
+            _spawner.OnHealPlayer.Subscribe(heal =>
+            {
+                _player.Heal(heal);
+            }).AddTo(this);
+            
             _player.OnHpChange.Subscribe(hp =>
             {
                 _hpImage.fillAmount = hp / (float)_player.MaxHp;
+            }).AddTo(this);
+            _player.OnHpChange.Where(x => x < 0).Subscribe(_ =>
+            {
+                GameInfo.IsClear = false;
+                
+                _player?.Dispose();
+                _spawner?.Dispose();
+                
+                SceneManager.LoadScene("ClearScreen");
             }).AddTo(this);
         }
 
@@ -35,6 +49,11 @@ namespace Game.Scripts.Core.MainGame
         {
             _timer.OnClear.Subscribe(_ =>
             {
+                GameInfo.IsClear = true;
+                
+                _player.Dispose();
+                _spawner.Dispose();
+                
                 SceneManager.LoadScene("ClearScreen");
             }).AddTo(this);
         }

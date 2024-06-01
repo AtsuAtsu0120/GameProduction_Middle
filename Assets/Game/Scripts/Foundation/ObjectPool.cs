@@ -6,7 +6,7 @@ using Object = UnityEngine.Object;
 
 namespace Game.Scripts.Foundation
 {
-    public class ObjectPool<T> where T : MonoBehaviour
+    public class ObjectPool<T> : IDisposable where T : MonoBehaviour
     {
         public Observable<T> OnActive => _onActive;
         public Observable<T> OnInactive => _onInactive;
@@ -72,6 +72,10 @@ namespace Game.Scripts.Foundation
         /// <param name="obj">その対象</param>
         public void InactiveObject(T obj)
         {
+            if (_onInactive.IsDisposed)
+            {
+                return;
+            }
             _onInactive.OnNext(obj);
             obj.gameObject.SetActive(false);
         
@@ -87,6 +91,18 @@ namespace Game.Scripts.Foundation
                 _pool.Enqueue(obj);
                 
                 _onInitialize.OnNext(obj);
+            }
+        }
+
+        public void Dispose()
+        {
+            _onActive?.Dispose();
+            _onInactive?.Dispose();
+            _onInitialize?.Dispose();
+
+            foreach (var obj in _pool)
+            {
+                Object.Destroy(obj);
             }
         }
     }
